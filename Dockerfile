@@ -4,7 +4,6 @@ RUN mv /usr/share/webapps/postfixadmin /root/app
 RUN mkdir /root/app/templates_c
 RUN $ALLOW_USER /root/app/templates_c
 ADD config.inc.php /root/etc/postfixadmin/config.inc.php
-ADD test.php /root/app/
 
 FROM mwaeckerlin/php-fpm
 COPY --from=build /root/ /
