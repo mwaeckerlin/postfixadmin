@@ -661,7 +661,7 @@ $CONF['database_name'] = getenv('DATABASE_NAME');
 $CONF['setup_password'] = getenv('SETUP_PASSWORD');
 
 $CONF['default_aliases'] = array();
-if (getenv('DEFAULT_ALIASES') && getenv('DEFAULT_ALIASES_DOMAIN')) {
+if (getenv('DEFAULT_ALIASES') && (getenv('DEFAULT_ALIASES_DOMAIN') || getenv('DEFAULT_ALIASES_ADDRESS'))) {
     $default_aliases = explode(' ', getenv('DEFAULT_ALIASES'));
     foreach ($default_aliases as $alias) {
         $CONF['default_aliases'][$alias] = getenv('DEFAULT_ALIASES_ADDRESS') || $alias . '@' . getenv('DEFAULT_ALIASES_DOMAIN');
