@@ -664,7 +664,7 @@ $CONF['default_aliases'] = array();
 if (getenv('DEFAULT_ALIASES') && getenv('DEFAULT_ALIASES_DOMAIN')) {
     $default_aliases = explode(' ', getenv('DEFAULT_ALIASES'));
     foreach ($default_aliases as $alias) {
-        $CONF['default_aliases'][$alias] = $alias . '@' . getenv('DEFAULT_ALIASES_DOMAIN');
+        $CONF['default_aliases'][$alias] = getenv('DEFAULT_ALIASES_ADDRESS') || $alias . '@' . getenv('DEFAULT_ALIASES_DOMAIN');
     }
 }
 
