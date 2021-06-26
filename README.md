@@ -4,6 +4,8 @@ Docker Image for Postfixadmin
 
 Best to use in https://github.com/mwaeckerlin/mailservice
 
+Use with https://github.com/mwaeckerlin/postfixadmin-proxy as nginx proxy in front of this
+
 ## Configuration
 
 - `SETUP_PASSWORD`: the hashed postfixadmin setup dassword, no default

@@ -7,7 +7,6 @@ ADD config.inc.php /root/etc/postfixadmin/config.inc.php
 
 FROM mwaeckerlin/php-fpm
 COPY --from=build /root/ /
-VOLUME [ "/app" ]
 ENV DATABASE_TYPE "mysqli"
 ENV DATABASE_HOST "postfixadmin-db"
 ENV DATABASE_NAME "postfixadmin"
