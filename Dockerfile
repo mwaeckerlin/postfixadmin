@@ -1,7 +1,7 @@
 FROM mwaeckerlin/very-base as build
 RUN $PKG_INSTALL postfixadmin
 RUN mv /usr/share/webapps/postfixadmin /root/app
-RUN mkdir /root/app/templates_c
+RUN mkdir -p /root/app/templates_c
 RUN $ALLOW_USER /root/app/templates_c
 ADD config.inc.php /root/etc/postfixadmin/config.inc.php
 
