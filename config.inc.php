@@ -468,7 +468,7 @@ EOM;
 
 // When creating mailboxes or aliases, check that the domain-part of the
 // address is legal by performing a name server look-up.
-$CONF['emailcheck_resolve_domain'] = 'YES';
+$CONF['emailcheck_resolve_domain'] = getenv('EMAILCHECK_RESOLVE_DOMAIN') ?: 'YES';
 
 
 // Optional:

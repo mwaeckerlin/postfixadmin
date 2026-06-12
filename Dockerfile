@@ -1,9 +1,23 @@
+FROM mwaeckerlin/php-fpm AS php-fpm-base
+
 FROM mwaeckerlin/very-base as build
-RUN $PKG_INSTALL postfixadmin
+RUN $PKG_INSTALL postfixadmin composer php84-mysqli php84-sqlite3
 RUN mv /usr/share/webapps/postfixadmin /root/app
-RUN mkdir -p /root/app/templates_c
-RUN $ALLOW_USER /root/app/templates_c
-ADD config.inc.php /root/etc/postfixadmin/config.inc.php
+RUN cd /root/app && \
+    php84 -r "\$c=json_decode(file_get_contents('composer.json'),true);\$c['autoload']['files']=array_values(array_filter(\$c['autoload']['files'],fn(\$f)=>\$f!=='config.inc.php'));file_put_contents('composer.json',json_encode(\$c,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));" && \
+    composer install --no-dev --optimize-autoloader --no-interaction \
+    --ignore-platform-reqs
+RUN mkdir -p /root/var/cache/postfixadmin/templates_c
+RUN $ALLOW_USER /root/var/cache/postfixadmin/templates_c
+RUN mkdir -p /root/etc/postfixadmin && \
+    cp /etc/postfixadmin/config.inc.php /root/etc/postfixadmin/config.inc.php
+ADD config.local.php /root/etc/postfixadmin/config.local.php
+COPY --from=php-fpm-base /etc/php84/php-fpm.d/www.conf /root/etc/php84/php-fpm.d/www.conf
+RUN sed -i \
+    -e 's/php_admin_flag\[display_errors\] = on/php_admin_flag[display_errors] = off/' \
+    -e 's/php_admin_flag\[display_startup_errors\] = on/php_admin_flag[display_startup_errors] = off/' \
+    /root/etc/php84/php-fpm.d/www.conf && \
+    printf '\nclear_env = no\n' >> /root/etc/php84/php-fpm.d/www.conf
 
 FROM mwaeckerlin/php-fpm
 COPY --from=build /root/ /
