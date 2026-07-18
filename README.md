@@ -23,3 +23,26 @@ Best start with an undefined setup password, then open http://localhost:8080/pub
 - `mysqli`: MySQL 4.1+ or MariaDB
 - `pgsql`: PostgreSQL
 - `sqlite`: SQLite 3
+
+## Security workarounds
+
+Active, time-boxed provisional workarounds in this image. Each is
+tagged `SECURITY-WORKAROUND` at its source location and has a build
+guard that fails the build after its review date so it cannot be
+silently forgotten.
+
+- **otphp audit block** (`Dockerfile`, `composer install
+  --no-security-blocking`)
+  - **Advisories:** GHSA-g7m4-839x-ch6v (HIGH), GHSA-2jx3-65f3-xr8r
+    (MEDIUM) in `spomky-labs/otphp`.
+  - **Why:** the fix exists only in otphp 11.4.3 (incompatible major);
+    the Alpine `postfixadmin` package still pins otphp `^10`. The
+    vulnerable code (parsing an attacker-controlled `otpauth://`
+    provisioning URI) is not reached — PostfixAdmin only generates
+    provisioning URIs server-side and verifies numeric codes.
+  - **Remove when:** the Alpine `postfixadmin` package requires otphp
+    `^11` (upstream master already does). Then drop
+    `--no-security-blocking` and the guard block.
+  - **Added:** 2026-07-17 — **Review by:** 2026-08-16. After that date
+    the build fails on purpose; re-evaluate and, if still needed, ask
+    before extending.
