@@ -36,10 +36,12 @@ silently forgotten.
   - **Advisories:** GHSA-g7m4-839x-ch6v (HIGH), GHSA-2jx3-65f3-xr8r
     (MEDIUM) in `spomky-labs/otphp`.
   - **Why:** the fix exists only in otphp 11.4.3 (incompatible major);
-    the Alpine `postfixadmin` package still pins otphp `^10`. The
-    vulnerable code (parsing an attacker-controlled `otpauth://`
-    provisioning URI) is not reached — PostfixAdmin only generates
-    provisioning URIs server-side and verifies numeric codes.
+    the Alpine `postfixadmin` package still pins otphp `^10`.
+  - **Reachability (code-audited):** not reachable. Both advisories need
+    `Factory::loadFromProvisioningUri` on attacker input.
+    `model/TotpPf.php` uses otphp only via `TOTP::create()` /
+    `TOTP::create($secret)` and `getProvisioningUri()` (output) — it
+    never parses a provisioning URI and never sets `digits` from input.
   - **Remove when:** the Alpine `postfixadmin` package requires otphp
     `^11` (upstream master already does). Then drop
     `--no-security-blocking` and the guard block.

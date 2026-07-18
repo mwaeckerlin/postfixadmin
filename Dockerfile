@@ -10,12 +10,15 @@ RUN mv /usr/share/webapps/postfixadmin /root/app
 # Both are fixed ONLY in otphp 11.4.3 — an incompatible major. This Alpine
 # postfixadmin package still pins otphp ^10 (upstream master is already on
 # ^11), so we cannot upgrade without risking PostfixAdmin's 2FA code.
-# Reachability: the vulnerable path parses an ATTACKER-controlled otpauth://
-# provisioning URI (Factory::loadFromProvisioningUri). PostfixAdmin only
-# GENERATES provisioning URIs server-side (fixed 6 digits) and verifies
-# numeric codes at login — it never parses attacker URIs, so the vulnerable
-# code is not reached. We therefore suppress the audit block below with
-# --no-security-blocking as a documented, time-boxed provisional.
+# Reachability: CODE-AUDITED not reachable. Both advisories require
+# parsing an attacker-controlled otpauth:// provisioning URI
+# (Factory::loadFromProvisioningUri). PostfixAdmin's model/TotpPf.php uses
+# otphp only via TOTP::create() (new secret) and TOTP::create($secret)
+# (server-stored secret) + getProvisioningUri() (output direction); it
+# never calls loadFromProvisioningUri and never sets `digits` from input.
+# The vulnerable code is therefore unreachable. We suppress the audit
+# block below with --no-security-blocking as a documented, time-boxed
+# provisional.
 #
 # Remove when: the Alpine `postfixadmin` package requires otphp ^11 — then
 #              drop --no-security-blocking AND this whole block.
