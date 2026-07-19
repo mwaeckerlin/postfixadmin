@@ -6,11 +6,11 @@ Use with https://github.com/mwaeckerlin/postfixadmin-proxy as nginx proxy in fro
 
 ## Configuration
 
-- `SETUP_PASSWORD`: the hashed postfixadmin setup dassword, no default
+- `SETUP_PASSWORD`: the hashed postfixadmin setup password, no default
 - `DATABASE_TYPE`: database type, default: `mysqli` - only tested with that
 - `DATABASE_HOST`: name of the database host, default: `postfixadmin-db`
 - `DATABASE_NAME`: name of the database, default: `postfixadmin`
-- `DATABASE_USER`: name of thae database user, default: `postfixadmin`
+- `DATABASE_USER`: name of the database user, default: `postfixadmin`
 - `DATABASE_PASSWORD`: password of the database user, default: `ChangeMe`
 
 ### Setup Password
