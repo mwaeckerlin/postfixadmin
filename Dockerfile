@@ -61,7 +61,12 @@ ENV DATABASE_TYPE "mysqli"
 ENV DATABASE_HOST "postfixadmin-db"
 ENV DATABASE_NAME "postfixadmin"
 ENV DATABASE_USER "postfixadmin"
-ENV DATABASE_PASSWORD "ChangeMe"
+# No default DB password: a shipped default credential is the dangerous
+# case (a copy-paste deployment where the DB image happens to set the
+# same one). Empty means the DB connection fails loudly and early
+# (fail-fast) instead of coming up on a publicly known password. The
+# operator MUST set DATABASE_PASSWORD explicitly. See README.
+ENV DATABASE_PASSWORD ""
 ENV ALIASES "0"
 ENV MAILBOXES "0"
 ENV MAXQUOTA "0"
