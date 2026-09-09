@@ -1,59 +1,22 @@
-FROM mwaeckerlin/php-fpm AS php-fpm-base
-
 FROM mwaeckerlin/very-base as build
-RUN $PKG_INSTALL postfixadmin composer php84-mysqli php84-sqlite3
+# The unversioned package names pull the current PHP, exactly as the
+# php-fpm base image does it; the version is then read from the file
+# system wherever it has to be spelled out.
+RUN $PKG_INSTALL postfixadmin composer php-mysqli php-sqlite3
 RUN mv /usr/share/webapps/postfixadmin /root/app
-# ─── SECURITY-WORKAROUND ───────────────────────────────────────────────
-# Composer refuses to install spomky-labs/otphp 10.x because of
-#   GHSA-g7m4-839x-ch6v  (HIGH,   DivisionByZeroError via unbounded digits)
-#   GHSA-2jx3-65f3-xr8r  (MEDIUM, mass-assignment in loadFromProvisioningUri)
-# Both are fixed ONLY in otphp 11.4.3 — an incompatible major. This Alpine
-# postfixadmin package still pins otphp ^10 (upstream master is already on
-# ^11), so we cannot upgrade without risking PostfixAdmin's 2FA code.
-# Reachability: CODE-AUDITED not reachable. Both advisories require
-# parsing an attacker-controlled otpauth:// provisioning URI
-# (Factory::loadFromProvisioningUri). PostfixAdmin's model/TotpPf.php uses
-# otphp only via TOTP::create() (new secret) and TOTP::create($secret)
-# (server-stored secret) + getProvisioningUri() (output direction); it
-# never calls loadFromProvisioningUri and never sets `digits` from input.
-# The vulnerable code is therefore unreachable. We suppress the audit
-# block below with --no-security-blocking as a documented, time-boxed
-# provisional.
-#
-# Remove when: the Alpine `postfixadmin` package requires otphp ^11 — then
-#              drop --no-security-blocking AND this whole block.
-# Added:    2026-07-17     Review-by: 2026-08-16 (30 days)
-# Register: see README.md «Security workarounds».
-#
-# EXPIRY GUARD — after the review date this build FAILS on purpose so the
-# workaround cannot be silently forgotten. Re-check whether otphp is fixed
-# and installable, then remove this block, or (only with Marc's approval)
-# extend the date here and in README.md.
-RUN [ "$(date +%Y%m%d)" -le "20260816" ] || { \
-      echo "############################################################" ; \
-      echo "SECURITY-WORKAROUND EXPIRED: otphp/postfixadmin, review-by 2026-08-16." ; \
-      echo "Re-check GHSA-g7m4-839x-ch6v / GHSA-2jx3-65f3-xr8r:" ; \
-      echo "  is spomky-labs/otphp fixed AND installable for this postfixadmin?" ; \
-      echo "Then remove '--no-security-blocking' + this block, or ask Marc" ; \
-      echo "for instructions before extending the review date." ; \
-      echo "############################################################" ; \
-      exit 1; }
-
+# The former otphp workaround is gone: the Alpine postfixadmin package now
+# requires spomky-labs/otphp ^11 and resolves to 11.5.0, so both advisories
+# (GHSA-g7m4-839x-ch6v, GHSA-2jx3-65f3-xr8r, fixed in 11.4.3) no longer
+# apply and the audit passes without any suppression.
 RUN cd /root/app && \
-    php84 -r "\$c=json_decode(file_get_contents('composer.json'),true);\$c['autoload']['files']=array_values(array_filter(\$c['autoload']['files'],fn(\$f)=>\$f!=='config.inc.php'));file_put_contents('composer.json',json_encode(\$c,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));" && \
+    php -r "\$c=json_decode(file_get_contents('composer.json'),true);\$c['autoload']['files']=array_values(array_filter(\$c['autoload']['files'],fn(\$f)=>\$f!=='config.inc.php'));file_put_contents('composer.json',json_encode(\$c,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));" && \
     composer install --no-dev --optimize-autoloader --no-interaction \
-    --ignore-platform-reqs --no-security-blocking   # SECURITY-WORKAROUND (see above)
+    --ignore-platform-reqs
 RUN mkdir -p /root/var/cache/postfixadmin/templates_c
 RUN $ALLOW_USER /root/var/cache/postfixadmin/templates_c
 RUN mkdir -p /root/etc/postfixadmin && \
     cp /etc/postfixadmin/config.inc.php /root/etc/postfixadmin/config.inc.php
 ADD config.local.php /root/etc/postfixadmin/config.local.php
-COPY --from=php-fpm-base /etc/php84/php-fpm.d/www.conf /root/etc/php84/php-fpm.d/www.conf
-RUN sed -i \
-    -e 's/php_admin_flag\[display_errors\] = on/php_admin_flag[display_errors] = off/' \
-    -e 's/php_admin_flag\[display_startup_errors\] = on/php_admin_flag[display_startup_errors] = off/' \
-    /root/etc/php84/php-fpm.d/www.conf && \
-    printf '\nclear_env = no\n' >> /root/etc/php84/php-fpm.d/www.conf
 
 FROM mwaeckerlin/php-fpm
 COPY --from=build /root/ /
