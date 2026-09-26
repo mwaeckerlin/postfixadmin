@@ -1,5 +1,10 @@
 # Changelog
 
+- 2026-09-26 **3.5.1**
+    - The image is published for amd64 and arm64 under one tag, built, tested and published automatically on every change and every week
+    - A test verifies that the shipped image contains no shell, busybox or perl
+    - Image build no longer emits warnings: modernized instruction format, and `DATABASE_PASSWORD` is no longer set in the image at all, which behaves like the empty value before
+
 - 2026-07-20 **no default database password**
     - The image no longer ships a default `DATABASE_PASSWORD` — an unset
       value now fails the DB connection loudly and early (fail-fast)

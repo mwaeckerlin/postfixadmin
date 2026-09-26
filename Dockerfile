@@ -1,4 +1,4 @@
-FROM mwaeckerlin/very-base as build
+FROM mwaeckerlin/very-base AS build
 # The unversioned package names pull the current PHP, exactly as the
 # php-fpm base image does it; the version is then read from the file
 # system wherever it has to be spelled out.
@@ -20,25 +20,24 @@ ADD config.local.php /root/etc/postfixadmin/config.local.php
 
 FROM mwaeckerlin/php-fpm
 COPY --from=build /root/ /
-ENV DATABASE_TYPE "mysqli"
-ENV DATABASE_HOST "postfixadmin-db"
-ENV DATABASE_NAME "postfixadmin"
-ENV DATABASE_USER "postfixadmin"
+ENV DATABASE_TYPE="mysqli"
+ENV DATABASE_HOST="postfixadmin-db"
+ENV DATABASE_NAME="postfixadmin"
+ENV DATABASE_USER="postfixadmin"
 # No default DB password: a shipped default credential is the dangerous
 # case (a copy-paste deployment where the DB image happens to set the
-# same one). Empty means the DB connection fails loudly and early
-# (fail-fast) instead of coming up on a publicly known password. The
-# operator MUST set DATABASE_PASSWORD explicitly. See README.
-ENV DATABASE_PASSWORD ""
-ENV ALIASES "0"
-ENV MAILBOXES "0"
-ENV MAXQUOTA "0"
-ENV DOMAIN_QUOTA_DEFAULT "0"
-ENV DEFAULT_ALIASES_DOMAIN ""
-ENV DEFAULT_ALIASES "abuse hostmaster postmaster webmaster"
-ENV VACATION_DOMAIN ""
-ENV FOOTER_TEXT ""
-ENV FOOTER_LINK ""
-ENV WELCOME_TEXT ""
-ENV SHOW_CUSTOM_DOMAINS ""
-ENV SHOW_CUSTOM_COLORS ""
+# same one). DATABASE_PASSWORD is not set in the image, so the DB
+# connection fails loudly and early (fail-fast) instead of coming up on a
+# publicly known password. The operator MUST set it explicitly. See README.
+ENV ALIASES="0"
+ENV MAILBOXES="0"
+ENV MAXQUOTA="0"
+ENV DOMAIN_QUOTA_DEFAULT="0"
+ENV DEFAULT_ALIASES_DOMAIN=""
+ENV DEFAULT_ALIASES="abuse hostmaster postmaster webmaster"
+ENV VACATION_DOMAIN=""
+ENV FOOTER_TEXT=""
+ENV FOOTER_LINK=""
+ENV WELCOME_TEXT=""
+ENV SHOW_CUSTOM_DOMAINS=""
+ENV SHOW_CUSTOM_COLORS=""
