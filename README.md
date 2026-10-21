@@ -17,6 +17,10 @@ Use with https://github.com/mwaeckerlin/postfixadmin-proxy as nginx proxy in fro
 
 Best start with an undefined setup password, then open http://localhost:8080/public/setup.php in the browser and follow the instruction to set a setup password. At the end, you get a hash. Then set this hash to `SETUP_PASSWORD` and restart. Then open the setup again to configure an administrator.
 
+### Folders of a New Mailbox
+
+The image carries the PHP module `imap`, so `$CONF['create_mailbox_subdirs']` in `config.local.php` can create folders such as `Spam` when a mailbox is added; PostfixAdmin then logs in to the IMAP server named in `create_mailbox_subdirs_host`.
+
 ### Database Types
 
 - `mysql`: MySQL 3.23 and 4.0, 4.1 or 5

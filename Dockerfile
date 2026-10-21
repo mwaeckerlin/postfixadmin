@@ -18,7 +18,20 @@ RUN mkdir -p /root/etc/postfixadmin && \
     cp /etc/postfixadmin/config.inc.php /root/etc/postfixadmin/config.inc.php
 ADD config.local.php /root/etc/postfixadmin/config.local.php
 
+# create_mailbox_subdirs creates the folders of a new mailbox with imap_open()
+FROM php:fpm-alpine AS imap
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
+    /usr/local/bin/install-php-extensions
+RUN install-php-extensions imap \
+    && mkdir -p /root/imap \
+    && tar cph \
+        "$(php-config --extension-dir)/imap.so" \
+        /usr/local/etc/php/conf.d/docker-php-ext-imap.ini \
+        $(ldd "$(php-config --extension-dir)/imap.so" | sed -n 's,.* => \([^ ]*\) .*,\1,p') \
+    | tar xpC /root/imap/
+
 FROM mwaeckerlin/php-fpm
+COPY --from=imap /root/imap/ /
 COPY --from=build /root/ /
 ENV DATABASE_TYPE="mysqli"
 ENV DATABASE_HOST="postfixadmin-db"

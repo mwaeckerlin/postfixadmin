@@ -1,5 +1,8 @@
 # Changelog
 
+- 2026-10-21 **3.5.3**
+    - The PHP module `imap` is back, so `create_mailbox_subdirs` can create the folders of a new mailbox again; PHP 8.4 moved it out of PHP into PECL, and since the base image switched to the official PHP it was missing
+
 - 2026-10-21 **3.5.2**
     - The weekly rebuild also starts the version line 1, published as `mwaeckerlin/postfixadmin:1`, which until now got no rebuild and so no security fix of its base image
 
