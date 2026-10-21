@@ -1,5 +1,8 @@
 # Changelog
 
+- 2026-10-21 **3.5.2**
+    - The weekly rebuild also starts the version line 1, published as `mwaeckerlin/postfixadmin:1`, which until now got no rebuild and so no security fix of its base image
+
 - 2026-09-26 **3.5.1**
     - The image is published for amd64 and arm64 under one tag, built, tested and published automatically on every change and every week
     - A test verifies that the shipped image contains no shell, busybox or perl
