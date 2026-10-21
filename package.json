@@ -1,6 +1,6 @@
 {
   "name": "@mwaeckerlin/postfixadmin",
-  "version": "3.5.3",
+  "version": "3.5.4",
   "scripts": {
     "build": "docker compose build",
     "start": "docker compose up --build --force-recreate --remove-orphans",
@@ -8,7 +8,8 @@
     "start:dev": "docker compose up --build --force-recreate --remove-orphans",
     "stop": "docker compose down",
     "deploy": "docker compose push",
-    "test": "npm run test:image",
-    "test:image": "npm run build && bash tests/image-contract.sh mwaeckerlin/postfixadmin && bash tests/imap-contract.sh mwaeckerlin/postfixadmin"
+    "test": "npm run test:image && npm run test:env",
+    "test:image": "npm run build && bash tests/image-contract.sh mwaeckerlin/postfixadmin && bash tests/imap-contract.sh mwaeckerlin/postfixadmin",
+    "test:env": "bash tests/env-config.sh mwaeckerlin/postfixadmin"
   }
 }

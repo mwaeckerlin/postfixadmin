@@ -7,7 +7,36 @@ $CONF['database_host'] = getenv('DATABASE_HOST');
 $CONF['database_user'] = getenv('DATABASE_USER');
 $CONF['database_password'] = getenv('DATABASE_PASSWORD');
 $CONF['database_name'] = getenv('DATABASE_NAME');
+if (getenv('DATABASE_PORT')) {
+    $CONF['database_port'] = getenv('DATABASE_PORT');
+}
 $CONF['setup_password'] = getenv('SETUP_PASSWORD');
+
+if (getenv('ADMIN_EMAIL')) {
+    $CONF['admin_email'] = getenv('ADMIN_EMAIL');
+}
+if (getenv('SMTP_SERVER')) {
+    $CONF['smtp_server'] = getenv('SMTP_SERVER');
+}
+if (getenv('SMTP_PORT')) {
+    $CONF['smtp_port'] = getenv('SMTP_PORT');
+}
+
+if (getenv('CREATE_MAILBOX_SUBDIRS')) {
+    $CONF['create_mailbox_subdirs'] = preg_split('/\s+/', trim(getenv('CREATE_MAILBOX_SUBDIRS')));
+}
+if (getenv('CREATE_MAILBOX_SUBDIRS_PREFIX') !== false) {
+    $CONF['create_mailbox_subdirs_prefix'] = getenv('CREATE_MAILBOX_SUBDIRS_PREFIX');
+}
+if (getenv('IMAP_HOST')) {
+    $CONF['create_mailbox_subdirs_host'] = getenv('IMAP_HOST');
+}
+if (getenv('IMAP_PORT')) {
+    $CONF['create_mailbox_subdirs_hostport'] = getenv('IMAP_PORT');
+}
+if (getenv('IMAP_OPTIONS')) {
+    $CONF['create_mailbox_subdirs_hostoptions'] = preg_split('/\s+/', trim(getenv('IMAP_OPTIONS')));
+}
 
 $CONF['emailcheck_resolve_domain'] = getenv('EMAILCHECK_RESOLVE_DOMAIN') ?: 'YES';
 
