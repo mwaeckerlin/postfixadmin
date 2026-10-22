@@ -1,5 +1,8 @@
 # Changelog
 
+- 2026-10-22 **3.5.5**
+    - The weekly run also rebuilds the version line 2, `mwaeckerlin/postfixadmin:2`, so it gets the security fixes of its base images like the line 1
+
 - 2026-10-22 **3.5.4**
     - The folders a new mailbox gets are listed in `CREATE_MAILBOX_SUBDIRS`, for example `Junk Sent Trash`, created on the IMAP server `IMAP_HOST` (port `IMAP_PORT`, connection options `IMAP_OPTIONS`) below the prefix `CREATE_MAILBOX_SUBDIRS_PREFIX`; before, this needed an edited `config.local.php`
     - The welcome and notification mails go out through `SMTP_SERVER` on `SMTP_PORT` with the sender `ADMIN_EMAIL`, and `DATABASE_PORT` sets the port of the database
